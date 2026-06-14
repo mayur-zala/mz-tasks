@@ -6,10 +6,16 @@
 <main class="min-h-screen bg-slate-50">
   <div class="max-w-xl mx-auto px-4 py-8 space-y-8">
     <!-- Add task -->
-    <form class="flex gap-3 items-center">
+    <form class="flex gap-3 items-center" [formGroup]="taskForm" (ngSubmit)="onSubmit()">
       <mat-form-field appearance="outline" class="flex-1">
         <mat-label>Add a task</mat-label>
-        <input matInput placeholder="e.g., Buy groceries" />
+        <input matInput placeholder="e.g., Buy groceries" formControlName="title" />
+        @if (
+          (taskForm.controls.title.touched || taskForm.controls.title.dirty) &&
+          taskForm.controls.title.invalid
+        ) {
+          <mat-error>Title is required</mat-error>
+        }
       </mat-form-field>
       <div class="flex items-center mb-5">
         <button matButton="filled" color="primary" class="cursor-pointer">
@@ -56,46 +62,29 @@
         <ul
           class="bg-white rounded-xl border border-slate-200 divide-y divide-slate-200 shadow-sm overflow-hidden"
         >
-          <li class="flex items-center gap-3 px-4 py-3">
-            <mat-checkbox></mat-checkbox>
-            <span class="flex-1 text-slate-800">Plan grocery list for the week</span>
-            <button mat-icon-button aria-label="Delete task" class="cursor-pointer">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </li>
-          <li class="flex items-center gap-3 px-4 py-3">
-            <mat-checkbox checked></mat-checkbox>
-            <span class="flex-1 text-slate-400 line-through">Write Angular routing notes</span>
-            <button mat-icon-button aria-label="Delete task" class="cursor-pointer">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </li>
-          <li class="flex items-center gap-3 px-4 py-3">
-            <mat-checkbox></mat-checkbox>
-            <span class="flex-1 text-slate-800">Set up Express server skeleton</span>
-            <button mat-icon-button aria-label="Delete task" class="cursor-pointer">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </li>
-          <li class="flex items-center gap-3 px-4 py-3">
-            <mat-checkbox checked></mat-checkbox>
-            <span class="flex-1 text-slate-400 line-through">Review REST API conventions</span>
-            <button mat-icon-button aria-label="Delete task" class="cursor-pointer">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </li>
-          <li class="flex items-center gap-3 px-4 py-3">
-            <mat-checkbox></mat-checkbox>
-            <span class="flex-1 text-slate-800">Push Week 1 progress to GitHub</span>
-            <button mat-icon-button aria-label="Delete task" class="cursor-pointer">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </li>
+          @for (item of tasks(); track item.id) {
+            <li class="flex items-center gap-3 px-4 py-3">
+              <mat-checkbox [checked]="item.status === 'completed'"></mat-checkbox>
+              <span
+                class="flex-1"
+                [class]="{
+                  'text-slate-800': item.status !== 'completed',
+                  'text-slate-400': item.status === 'completed',
+                  'line-through': item.status === 'completed',
+                }"
+                >{{ item.title }}</span
+              >
+              <button mat-icon-button aria-label="Delete task" class="cursor-pointer">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </li>
+          }
         </ul>
 
         <p class="mt-4 text-sm text-slate-500 text-center">2 of 5 done</p>
       </div>
-    } @else {
+    }
+    @if (tasks().length === 0 && !tasksLoading()) {
       <!-- Empty state: show instead of the list/counter when there are no tasks -->
       <div
         class="flex flex-col items-center justify-center text-center py-16 px-4 bg-white rounded-xl border border-slate-200"
