@@ -1,4 +1,4 @@
-## 🟢 Week 1 — Tasks App
+## Tasks App
 
 _Concept: frontend ↔ backend over HTTP. Data lives in-memory on the server._
 

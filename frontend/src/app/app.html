@@ -12,7 +12,7 @@
         <input matInput placeholder="e.g., Buy groceries" />
       </mat-form-field>
       <div class="flex items-center mb-5">
-        <button mat-flat-button color="primary" class="cursor-pointer">
+        <button matButton="filled" color="primary" class="cursor-pointer">
           <mat-icon>add</mat-icon>
           Add
         </button>
@@ -20,82 +20,90 @@
     </form>
 
     <!-- Filters -->
-    <mat-button-toggle-group class="w-full flex" value="all">
+    <mat-button-toggle-group
+      class="w-full flex"
+      [value]="filterStatus()"
+      (change)="filterStatus.set($event.value)"
+    >
       <mat-button-toggle value="all" class="flex-1">All</mat-button-toggle>
       <mat-button-toggle value="active" class="flex-1">Active</mat-button-toggle>
       <mat-button-toggle value="completed" class="flex-1">Completed</mat-button-toggle>
     </mat-button-toggle-group>
 
-    <!-- Task list (populated state) -->
-    <div>
+    @if (tasks().length === 0 && tasksLoading()) {
+      <!-- Loading state: show while tasks are being fetched -->
       <ul
         class="bg-white rounded-xl border border-slate-200 divide-y divide-slate-200 shadow-sm overflow-hidden"
       >
         <li class="flex items-center gap-3 px-4 py-3">
-          <mat-checkbox></mat-checkbox>
-          <span class="flex-1 text-slate-800">Plan grocery list for the week</span>
-          <button mat-icon-button aria-label="Delete task" class="cursor-pointer">
-            <mat-icon>delete</mat-icon>
-          </button>
+          <div class="h-5 w-5 rounded-full bg-slate-200 animate-pulse"></div>
+          <div class="h-4 flex-1 rounded bg-slate-200 animate-pulse"></div>
         </li>
         <li class="flex items-center gap-3 px-4 py-3">
-          <mat-checkbox checked></mat-checkbox>
-          <span class="flex-1 text-slate-400 line-through">Write Angular routing notes</span>
-          <button mat-icon-button aria-label="Delete task" class="cursor-pointer">
-            <mat-icon>delete</mat-icon>
-          </button>
+          <div class="h-5 w-5 rounded-full bg-slate-200 animate-pulse"></div>
+          <div class="h-4 flex-1 rounded bg-slate-200 animate-pulse"></div>
         </li>
         <li class="flex items-center gap-3 px-4 py-3">
-          <mat-checkbox></mat-checkbox>
-          <span class="flex-1 text-slate-800">Set up Express server skeleton</span>
-          <button mat-icon-button aria-label="Delete task" class="cursor-pointer">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </li>
-        <li class="flex items-center gap-3 px-4 py-3">
-          <mat-checkbox checked></mat-checkbox>
-          <span class="flex-1 text-slate-400 line-through">Review REST API conventions</span>
-          <button mat-icon-button aria-label="Delete task" class="cursor-pointer">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </li>
-        <li class="flex items-center gap-3 px-4 py-3">
-          <mat-checkbox></mat-checkbox>
-          <span class="flex-1 text-slate-800">Push Week 1 progress to GitHub</span>
-          <button mat-icon-button aria-label="Delete task" class="cursor-pointer">
-            <mat-icon>delete</mat-icon>
-          </button>
+          <div class="h-5 w-5 rounded-full bg-slate-200 animate-pulse"></div>
+          <div class="h-4 flex-1 rounded bg-slate-200 animate-pulse"></div>
         </li>
       </ul>
+    }
 
-      <p class="mt-4 text-sm text-slate-500 text-center">2 of 5 done</p>
-    </div>
+    @if (tasks().length > 0) {
+      <!-- Task list (populated state) -->
+      <div>
+        <ul
+          class="bg-white rounded-xl border border-slate-200 divide-y divide-slate-200 shadow-sm overflow-hidden"
+        >
+          <li class="flex items-center gap-3 px-4 py-3">
+            <mat-checkbox></mat-checkbox>
+            <span class="flex-1 text-slate-800">Plan grocery list for the week</span>
+            <button mat-icon-button aria-label="Delete task" class="cursor-pointer">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </li>
+          <li class="flex items-center gap-3 px-4 py-3">
+            <mat-checkbox checked></mat-checkbox>
+            <span class="flex-1 text-slate-400 line-through">Write Angular routing notes</span>
+            <button mat-icon-button aria-label="Delete task" class="cursor-pointer">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </li>
+          <li class="flex items-center gap-3 px-4 py-3">
+            <mat-checkbox></mat-checkbox>
+            <span class="flex-1 text-slate-800">Set up Express server skeleton</span>
+            <button mat-icon-button aria-label="Delete task" class="cursor-pointer">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </li>
+          <li class="flex items-center gap-3 px-4 py-3">
+            <mat-checkbox checked></mat-checkbox>
+            <span class="flex-1 text-slate-400 line-through">Review REST API conventions</span>
+            <button mat-icon-button aria-label="Delete task" class="cursor-pointer">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </li>
+          <li class="flex items-center gap-3 px-4 py-3">
+            <mat-checkbox></mat-checkbox>
+            <span class="flex-1 text-slate-800">Push Week 1 progress to GitHub</span>
+            <button mat-icon-button aria-label="Delete task" class="cursor-pointer">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </li>
+        </ul>
 
-    <!-- Empty state: show instead of the list/counter when there are no tasks -->
-    <div
-      class="flex flex-col items-center justify-center text-center py-16 px-4 bg-white rounded-xl border border-slate-200"
-    >
-      <mat-icon class="h-12! w-12! text-5xl! text-slate-300">task_alt</mat-icon>
-      <h2 class="mt-4 text-lg font-medium text-slate-800">No tasks yet</h2>
-      <p class="mt-1 text-sm text-slate-500">Add your first task to get started.</p>
-    </div>
-
-    <!-- Loading state: show while tasks are being fetched -->
-    <ul
-      class="bg-white rounded-xl border border-slate-200 divide-y divide-slate-200 shadow-sm overflow-hidden"
-    >
-      <li class="flex items-center gap-3 px-4 py-3">
-        <div class="h-5 w-5 rounded-full bg-slate-200 animate-pulse"></div>
-        <div class="h-4 flex-1 rounded bg-slate-200 animate-pulse"></div>
-      </li>
-      <li class="flex items-center gap-3 px-4 py-3">
-        <div class="h-5 w-5 rounded-full bg-slate-200 animate-pulse"></div>
-        <div class="h-4 flex-1 rounded bg-slate-200 animate-pulse"></div>
-      </li>
-      <li class="flex items-center gap-3 px-4 py-3">
-        <div class="h-5 w-5 rounded-full bg-slate-200 animate-pulse"></div>
-        <div class="h-4 flex-1 rounded bg-slate-200 animate-pulse"></div>
-      </li>
-    </ul>
+        <p class="mt-4 text-sm text-slate-500 text-center">2 of 5 done</p>
+      </div>
+    } @else {
+      <!-- Empty state: show instead of the list/counter when there are no tasks -->
+      <div
+        class="flex flex-col items-center justify-center text-center py-16 px-4 bg-white rounded-xl border border-slate-200"
+      >
+        <mat-icon class="h-12! w-12! text-5xl! text-slate-300">task_alt</mat-icon>
+        <h2 class="mt-4 text-lg font-medium text-slate-800">No tasks yet</h2>
+        <p class="mt-1 text-sm text-slate-500">Add your first task to get started.</p>
+      </div>
+    }
   </div>
 </main>

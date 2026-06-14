@@ -4,6 +4,7 @@
 // Learn more about theming and how to use it for your application's
 // custom components at https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
+@import './tailwind.css';
 
 html {
   height: 100%;
@@ -15,6 +16,25 @@ html {
       ),
       typography: Roboto,
       density: 0,
+    )
+  );
+  @include mat.button-overrides(
+    (
+      // Removes rounded corners for filled, elevated, and tonal buttons
+      filled-container-shape: 8px
+    )
+  );
+  @include mat.form-field-overrides(
+    (
+      // Removes rounded corners for filled, elevated, and tonal buttons
+      outlined-container-shape: 8px,
+      container-height: 42px,
+      container-vertical-padding: 8px
+    )
+  );
+  @include mat.button-toggle-overrides(
+    (
+      shape: 8px,
     )
   );
 }
