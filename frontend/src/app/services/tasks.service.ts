@@ -1,5 +1,5 @@
 import { inject, Service, signal } from '@angular/core';
-import { ResponseModel, Task } from '../models/tasks.model';
+import { ResponseModel, Task, TaskRequest } from '../models/tasks.model';
 import { HttpClient } from '@angular/common/http';
 
 @Service()
@@ -28,5 +28,10 @@ export class TasksService {
           this.tasksLoading.set(false);
         },
       });
+  }
+
+  createTask(payload: TaskRequest) {
+    this.tasksLoading.set(true);
+    return this.httpClient.post<ResponseModel<string>>(`http://localhost:3000/api/tasks`, payload);
   }
 }

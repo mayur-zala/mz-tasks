@@ -7,6 +7,8 @@ export interface Task {
   updatedAt: Date;
 }
 
+export type TaskRequest = Pick<Task, 'title'>;
+
 export interface ResponseModel<T> {
   data: T;
   message: string;

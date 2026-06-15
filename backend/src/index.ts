@@ -10,6 +10,7 @@ app.use(
     origin: "http://localhost:4200",
   }),
 );
+app.use(express.json());
 
 app.use("/api/tasks", tasksRoutes);
 

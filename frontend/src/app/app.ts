@@ -30,7 +30,7 @@ export class App implements OnInit {
   filterStatus = signal<TaskStatus>('all');
   tasksLoading = this.tasksService.tasksLoading$;
   taskForm = new FormGroup({
-    title: new FormControl('', [Validators.required]),
+    title: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
   });
   completedTaskCount = computed(() =>
     this.tasks().reduce((a, c) => (c.status === 'completed' ? (a += 1) : a), 0),
@@ -49,6 +49,14 @@ export class App implements OnInit {
       this.taskForm.markAllAsTouched();
       return;
     }
-    console.log(this.taskForm.value);
+    const title = this.taskForm.value.title ?? '';
+    this.tasksService.createTask({ title }).subscribe({
+      next: () => {
+        this.getTasks();
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
   }
 }
