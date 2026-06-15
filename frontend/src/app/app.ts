@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -32,9 +32,16 @@ export class App implements OnInit {
   taskForm = new FormGroup({
     title: new FormControl('', [Validators.required]),
   });
+  completedTaskCount = computed(() =>
+    this.tasks().reduce((a, c) => (c.status === 'completed' ? (a += 1) : a), 0),
+  );
 
   ngOnInit(): void {
-    this.tasksService.getTasks();
+    this.getTasks();
+  }
+
+  getTasks(): void {
+    this.tasksService.getTasks(this.filterStatus());
   }
 
   onSubmit(): void {

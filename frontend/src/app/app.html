@@ -3,7 +3,7 @@
   <span class="text-lg font-medium">Tasks</span>
 </mat-toolbar>
 
-<main class="min-h-screen bg-slate-50">
+<main class="min-h-fit bg-slate-50">
   <div class="max-w-xl mx-auto px-4 py-8 space-y-8">
     <!-- Add task -->
     <form class="flex gap-3 items-center" [formGroup]="taskForm" (ngSubmit)="onSubmit()">
@@ -29,14 +29,14 @@
     <mat-button-toggle-group
       class="w-full flex"
       [value]="filterStatus()"
-      (change)="filterStatus.set($event.value)"
+      (change)="filterStatus.set($event.value); getTasks()"
     >
       <mat-button-toggle value="all" class="flex-1">All</mat-button-toggle>
       <mat-button-toggle value="active" class="flex-1">Active</mat-button-toggle>
       <mat-button-toggle value="completed" class="flex-1">Completed</mat-button-toggle>
     </mat-button-toggle-group>
 
-    @if (tasks().length === 0 && tasksLoading()) {
+    @if (tasks().length === 0 || tasksLoading()) {
       <!-- Loading state: show while tasks are being fetched -->
       <ul
         class="bg-white rounded-xl border border-slate-200 divide-y divide-slate-200 shadow-sm overflow-hidden"
@@ -55,8 +55,7 @@
         </li>
       </ul>
     }
-
-    @if (tasks().length > 0) {
+    @if (tasks().length > 0 && !tasksLoading()) {
       <!-- Task list (populated state) -->
       <div>
         <ul
@@ -81,7 +80,9 @@
           }
         </ul>
 
-        <p class="mt-4 text-sm text-slate-500 text-center">2 of 5 done</p>
+        <p class="mt-4 text-sm text-slate-500 text-center">
+          {{ completedTaskCount() }} of {{ tasks().length }} done
+        </p>
       </div>
     }
     @if (tasks().length === 0 && !tasksLoading()) {

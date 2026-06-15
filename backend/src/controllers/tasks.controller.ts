@@ -4,12 +4,16 @@ import type { Task } from "../models/tasks.model.js";
 
 const TASKS = SAMPLE_TASKS;
 
-export const getTasks = (_req: Request, res: Response) => {
+export const getTasks = (req: Request, res: Response) => {
+  const filter: string = (req.query["filter"] as string) || "";
   setTimeout(() => {
     res.status(200).json({
       success: true,
       message: "",
-      data: TASKS,
+      data:
+        filter !== "all"
+          ? TASKS.filter((t) => t.status.toLowerCase() === filter.toLowerCase())
+          : TASKS,
     });
   }, 1500);
 };

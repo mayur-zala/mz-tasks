@@ -11,20 +11,22 @@ export class TasksService {
   readonly tasks$ = this.tasks.asReadonly();
   readonly tasksLoading$ = this.tasksLoading.asReadonly();
 
-  getTasks() {
+  getTasks(filter = '') {
     this.tasksLoading.set(true);
-    return this.httpClient.get<ResponseModel<Task[]>>('http://localhost:3000/api/tasks').subscribe({
-      next: (response) => {
-        this.tasks.set(response.data);
-        this.tasksLoading.set(false);
-      },
-      error: (error) => {
-        console.error(error);
-        this.tasksLoading.set(false);
-      },
-      complete: () => {
-        this.tasksLoading.set(false);
-      },
-    });
+    return this.httpClient
+      .get<ResponseModel<Task[]>>(`http://localhost:3000/api/tasks?filter=${filter}`)
+      .subscribe({
+        next: (response) => {
+          this.tasks.set(response.data);
+          this.tasksLoading.set(false);
+        },
+        error: (error) => {
+          console.error(error);
+          this.tasksLoading.set(false);
+        },
+        complete: () => {
+          this.tasksLoading.set(false);
+        },
+      });
   }
 }
